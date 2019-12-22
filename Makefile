@@ -2,12 +2,18 @@ TARGET = main
 
 # Default target chip.
 #MCU ?= STM32F030x6
-MCU ?= STM32WB55xE
+MCU ?= STM32F031x6
+#MCU ?= STM32WB55xE
 
 # Define target chip information.
 ifeq ($(MCU), STM32F030x6)
 	MCU_FILES = STM32F030x6
 	ST_MCU_DEF = STM32F030x6
+	MCU_CLASS = F0
+	MCU_SPEC = cortex-m0
+else ifeq ($(MCU), STM32F031x6)
+	MCU_FILES = STM32F031x6
+	ST_MCU_DEF = STM32F031x6
 	MCU_CLASS = F0
 	MCU_SPEC = cortex-m0
 else ifeq ($(MCU), STM32WB55xE)

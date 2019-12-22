@@ -12,10 +12,12 @@
 
 // Global defines.
 // (LED pin depends on your board)
-#if defined( STM32F030x6 )
+#if defined( STM32F030x6 ) || defined( STM32F031x6 )
+  #define LEDEN   ( RCC_AHBENR_GPIOAEN )
   #define PoLED   ( GPIOA )
   #define PiLED   ( 1 )
 #elif defined( STM32WB55xE )
+  #define LEDEN   ( RCC_AHB2ENR_GPIOEEN )
   #define PoLED   ( GPIOE )
   #define PiLED   ( 4 )
 #endif

@@ -10,7 +10,7 @@
 // SysTick counter definition.
 volatile uint32_t systick = 0;
 
-// Reset handler: copy .data section, and clear .bss section.
+// Reset handler: set the stack pointer and branch to main().
 __attribute__( ( naked ) ) void reset_handler( void ) {
   // Set the stack pointer to the 'end of stack' value.
   __asm__( "LDR r0, =_estack\n\t"
@@ -35,28 +35,22 @@ void delay_ms( uint32_t ms ) {
  */
 int main(void) {
   // Copy initialized data from .sidata (Flash) to .data (RAM)
-  memcpy( ( void* )&_sdata,
-          ( const void* )&_sidata,
-          ( ( void* )&_edata - ( void* )&_sdata ) );
+  memcpy( &_sdata, &_sidata, ( ( void* )&_edata - ( void* )&_sdata ) );
   // Clear the .bss section in RAM.
   memset( &_sbss, 0x00, ( ( void* )&_ebss - ( void* )&_sbss ) );
 
   // Setup the SysTick peripheral to 1ms ticks.
-  // This must be called before `delay_ms(...)`.
   SysTick_Config( core_clock_hz / 1000 );
 
-  // Enable the GPIO peripherals.
+  // Enable GPIO peripherals. (`LEDEN` defined in `main.h`)
   #if defined( VVC_F0 )
-    RCC->AHBENR   |= ( RCC_AHBENR_GPIOAEN |
-                       RCC_AHBENR_GPIOBEN );
+    RCC->AHBENR   |= ( LEDEN );
   #elif defined( VVC_WB )
-    RCC->AHB2ENR   |= ( RCC_AHB2ENR_GPIOAEN |
-                        RCC_AHB2ENR_GPIOBEN |
-                        RCC_AHB2ENR_GPIOCEN |
-                        RCC_AHB2ENR_GPIOEEN );
+    RCC->AHB2ENR  |= ( LEDEN );
   #endif
 
   // GPIO pin setup: output, push-pull, low-speed.
+  // (`PoLED` and `PiLED` defined in `main.h`)
   PoLED->MODER    &= ~( 0x3 << ( PiLED * 2 ) );
   PoLED->MODER    |=  ( 0x1 << ( PiLED * 2 ) );
   PoLED->OTYPER   &= ~( 0x1 << PiLED );
