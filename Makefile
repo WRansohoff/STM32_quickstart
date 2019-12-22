@@ -11,21 +11,27 @@ ifeq ($(MCU), STM32F030x6)
 	MCU_FILES = STM32F030x6
 	ST_MCU_DEF = STM32F030x6
 	MCU_CLASS = F0
-	MCU_SPEC = cortex-m0
 else ifeq ($(MCU), STM32F031x6)
 	MCU_FILES = STM32F031x6
 	ST_MCU_DEF = STM32F031x6
 	MCU_CLASS = F0
-	MCU_SPEC = cortex-m0
 else ifeq ($(MCU), STM32G071xB)
 	MCU_FILES = STM32G071xB
 	ST_MCU_DEF = STM32G071xx
 	MCU_CLASS = G0
-	MCU_SPEC = cortex-m0plus
 else ifeq ($(MCU), STM32WB55xE)
 	MCU_FILES = STM32WB55xE
 	ST_MCU_DEF = STM32WB55xx
 	MCU_CLASS = WB
+endif
+
+ifeq ($(MCU_CLASS), F0)
+	MCU_SPEC = cortex-m0
+else ifeq ($(MCU_CLASS), $(filter $(MCU_CLASS), L0 G0))
+	MCU_SPEC = cortex-m0plus
+else ifeq ($(MCU_CLASS), $(filter $(MCU_CLASS), F1 L1))
+	MCU_SPEC = cortex-m3
+else ifeq ($(MCU_CLASS), $(filter $(MCU_CLASS), L4 G4 WB))
 	MCU_SPEC = cortex-m4
 endif
 
