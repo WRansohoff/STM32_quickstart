@@ -3,6 +3,8 @@
 // Default values for global variables.
 #if defined( VVC_F0 )
   uint32_t core_clock_hz = 8000000;
+#elif defined( VVC_G0 )
+  uint32_t core_clock_hz = 16000000;
 #elif defined( VVC_WB )
   uint32_t core_clock_hz = 4000000;
 #endif
@@ -45,6 +47,8 @@ int main(void) {
   // Enable GPIO peripherals. (`LEDEN` defined in `main.h`)
   #if defined( VVC_F0 )
     RCC->AHBENR   |= ( LEDEN );
+  #elif defined( VVC_G0 )
+    RCC->IOPENR   |= ( LEDEN );
   #elif defined( VVC_WB )
     RCC->AHB2ENR  |= ( LEDEN );
   #endif
