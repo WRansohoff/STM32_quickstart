@@ -68,6 +68,6 @@ int main(void) {
 }
 
 // SysTick interrupt handler: increment the global 'systick' value.
-void SysTick_handler( void ) {
+void SysTick_IRQn_handler( void ) {
   ++systick;
 }

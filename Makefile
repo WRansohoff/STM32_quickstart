@@ -2,8 +2,8 @@ TARGET = main
 
 # Default target chip.
 #MCU ?= STM32F030x6
-MCU ?= STM32F031x6
-#MCU ?= STM32WB55xE
+#MCU ?= STM32F031x6
+MCU ?= STM32WB55xE
 
 # Define target chip information.
 ifeq ($(MCU), STM32F030x6)
@@ -82,7 +82,7 @@ LFLAGS += -Wl,--gc-sections
 LFLAGS += -Wl,-L./ld
 LFLAGS += -T$(LSCRIPT)
 
-AS_SRC   =  ./vector_tables/$(MCU_FILES)_vt.S
+AS_SRC   =  ./$(ST_MCU_DEF)_vt.S
 C_SRC    =  ./src/main.c
 
 INCLUDE  =  -I./
@@ -93,6 +93,9 @@ OBJS += $(C_SRC:.c=.o)
 
 .PHONY: all
 all: $(TARGET).bin
+
+./$(ST_MCU_DEF)_vt.S:
+	python generate_vt.py $(ST_MCU_DEF) $(MCU_SPEC)
 
 %.o: %.S
 	$(CC) -x assembler-with-cpp $(ASFLAGS) $< -o $@
@@ -110,5 +113,6 @@ $(TARGET).bin: $(TARGET).elf
 .PHONY: clean
 clean:
 	rm -f $(OBJS)
+	rm -f $(ST_MCU_DEF)_vt.S
 	rm -f $(TARGET).elf
 	rm -f $(TARGET).bin
