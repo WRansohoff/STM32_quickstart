@@ -10,6 +10,8 @@
   #include "stm32l0xx.h"
 #elif defined( VVC_G0 )
   #include "stm32g0xx.h"
+#elif defined( VVC_L4 )
+  #include "stm32l4xx.h"
 #elif defined( VVC_WB )
   #include "stm32wbxx.h"
 #endif
@@ -28,6 +30,10 @@
   #define LEDEN   ( RCC_IOPENR_GPIOCEN )
   #define PoLED   ( GPIOC )
   #define PiLED   ( 6 )
+#elif defined( STM32L496xG )
+  #define LEDEN   ( RCC_AHB2ENR_GPIOAEN )
+  #define PoLED   ( GPIOA )
+  #define PiLED   ( 15 )
 #elif defined( STM32WB55xE )
   #define LEDEN   ( RCC_AHB2ENR_GPIOEEN )
   #define PoLED   ( GPIOE )

@@ -7,7 +7,7 @@
   uint32_t core_clock_hz = 2100000;
 #elif defined( VVC_G0 )
   uint32_t core_clock_hz = 16000000;
-#elif defined( VVC_WB )
+#elif defined( VVC_L4 ) || defined( VVC_WB )
   uint32_t core_clock_hz = 4000000;
 #endif
 
@@ -51,7 +51,7 @@ int main(void) {
     RCC->AHBENR   |= ( LEDEN );
   #elif defined( VVC_G0 ) || defined( VVC_L0 )
     RCC->IOPENR   |= ( LEDEN );
-  #elif defined( VVC_WB )
+  #elif defined( VVC_L4 ) || defined( VVC_WB )
     RCC->AHB2ENR  |= ( LEDEN );
   #endif
 
