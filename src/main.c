@@ -1,7 +1,7 @@
 #include "main.h"
 
-// Default values for global variables.
-#if defined( VVC_F0 )
+// Default values for the core system clock frequency.
+#if defined( VVC_F0 ) || defined( VVC_F1 )
   uint32_t core_clock_hz = 8000000;
 #elif defined( VVC_L0 )
   uint32_t core_clock_hz = 2100000;
@@ -49,6 +49,8 @@ int main(void) {
   // Enable GPIO peripherals. (`LEDEN` defined in `main.h`)
   #if defined( VVC_F0 )
     RCC->AHBENR   |= ( LEDEN );
+  #elif defined( VVC_F1 )
+    RCC->APB2ENR  |= ( LEDEN );
   #elif defined( VVC_G0 ) || defined( VVC_L0 )
     RCC->IOPENR   |= ( LEDEN );
   #elif defined( VVC_L4 ) || defined( VVC_WB )
@@ -57,12 +59,22 @@ int main(void) {
 
   // GPIO pin setup: output, push-pull, low-speed.
   // (`PoLED` and `PiLED` defined in `main.h`)
-  PoLED->MODER    &= ~( 0x3 << ( PiLED * 2 ) );
-  PoLED->MODER    |=  ( 0x1 << ( PiLED * 2 ) );
-  PoLED->OTYPER   &= ~( 0x1 << PiLED );
-  PoLED->OSPEEDR  &= ~( 0x3 << ( PiLED * 2 ) );
-  PoLED->OSPEEDR  |=  ( 0x1 << ( PiLED * 2 ) );
-  PoLED->ODR      |=  ( 1 << PiLED );
+  #if defined( VVC_F1 )
+    #if ( PiLED > 7 )
+      PoLED->CRH    &= ~( 0xF << ( ( PiLED - 8 ) * 4 ) );
+      PoLED->CRH    |=  ( 0x2 << ( ( PiLED - 8 ) * 4 ) );
+    #else
+      PoLED->CRL    &= ~( 0xF << ( PiLED * 4 ) );
+      PoLED->CRL    |=  ( 0x2 << ( PiLED * 4 ) );
+    #endif
+  #else
+    PoLED->MODER    &= ~( 0x3 << ( PiLED * 2 ) );
+    PoLED->MODER    |=  ( 0x1 << ( PiLED * 2 ) );
+    PoLED->OTYPER   &= ~( 0x1 << PiLED );
+    PoLED->OSPEEDR  &= ~( 0x3 << ( PiLED * 2 ) );
+    PoLED->OSPEEDR  |=  ( 0x1 << ( PiLED * 2 ) );
+    PoLED->ODR      |=  ( 1 << PiLED );
+  #endif
 
   // Toggle the LED every second.
   while ( 1 ) {

@@ -6,6 +6,8 @@
 
 #if defined( VVC_F0 )
   #include "stm32f0xx.h"
+#elif defined( VVC_F1 )
+  #include "stm32f1xx.h"
 #elif defined( VVC_L0 )
   #include "stm32l0xx.h"
 #elif defined( VVC_G0 )
@@ -22,6 +24,10 @@
   #define LEDEN   ( RCC_AHBENR_GPIOAEN )
   #define PoLED   ( GPIOA )
   #define PiLED   ( 1 )
+#elif defined( STM32F103x8 ) || defined( STM32F103xB )
+  #define LEDEN   ( RCC_APB2ENR_IOPBEN )
+  #define PoLED   ( GPIOB )
+  #define PiLED   ( 12 )
 #elif defined( STM32L031x6 )
   #define LEDEN   ( RCC_IOPENR_GPIOBEN )
   #define PoLED   ( GPIOB )
